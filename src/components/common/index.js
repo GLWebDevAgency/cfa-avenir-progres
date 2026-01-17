@@ -1,0 +1,8 @@
+export { default as SEO } from './SEO'
+export { default as Button } from './Button'
+export { default as SectionTitle } from './SectionTitle'
+export { default as StatsSection, AnimatedCounter, StatCard } from './StatsSection'
+export { default as FormationCard } from './FormationCard'
+export { default as TestimonialCard } from './TestimonialCard'
+export { default as FAQ } from './FAQ'
+export { default as ThemeToggle } from './ThemeToggle'
