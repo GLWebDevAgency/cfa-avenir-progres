@@ -19,7 +19,7 @@ export const siteConfig = {
   
   stats: {
     insertionRate: 94,
-    learners: 55000,
+    learners: 100,
     successRate: 92,
     yearsExperience: 10,
   },

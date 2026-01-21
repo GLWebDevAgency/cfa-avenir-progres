@@ -1,7 +1,7 @@
 // Logos officiels pour Avenir&Progres
 // Utilise les vraies images des partenaires et certifications
 
-// Logo Avenir&Progres officiel
+// Logo Avenir&Progres officiel - Adapte automatiquement au thème
 export const AvenirProgresLogo = ({ className = '', size = 'md' }) => {
   const sizes = {
     xs: 'h-8',
@@ -13,11 +13,20 @@ export const AvenirProgresLogo = ({ className = '', size = 'md' }) => {
   const sizeClass = sizes[size] || sizes.md
 
   return (
-    <img
-      src="/images/logos/logo-a&p.png"
-      alt="Avenir&Progres - Centre de Formation Professionnelle"
-      className={`${sizeClass} w-auto object-contain ${className}`}
-    />
+    <>
+      {/* Logo couleur pour light mode */}
+      <img
+        src="/images/logos/logo-a&p.png"
+        alt="Avenir&Progres - Centre de Formation Professionnelle"
+        className={`${sizeClass} w-auto object-contain dark:hidden ${className}`}
+      />
+      {/* Logo blanc pour dark mode */}
+      <img
+        src="/images/logos/logo-a&p-white.png"
+        alt="Avenir&Progres - Centre de Formation Professionnelle"
+        className={`${sizeClass} w-auto object-contain hidden dark:block ${className}`}
+      />
+    </>
   )
 }
 

@@ -6,6 +6,34 @@ import { CTASection } from '@/components/sections'
 import { testimonials, ratings } from '@/data/testimonials'
 import { siteConfig } from '@/data/siteConfig'
 
+// Calculer le total des avis et la moyenne pondérée
+const totalReviews = Object.values(ratings).reduce((sum, r) => sum + r.count, 0)
+const weightedAverage = Object.values(ratings).reduce((sum, r) => sum + r.score * r.count, 0) / totalReviews
+
+// Composant pour afficher les étoiles avec remplissage partiel
+const StarRating = ({ score, starSize = 'w-4 h-4' }) => {
+  return (
+    <div className="flex items-center gap-1">
+      {[...Array(5)].map((_, i) => {
+        const fillPercentage = Math.min(1, Math.max(0, score - i)) * 100
+        return (
+          <div key={i} className="relative">
+            {/* Étoile vide (fond) */}
+            <Star className={`${starSize} text-gray-300`} />
+            {/* Étoile remplie (superposée avec clip) */}
+            <div
+              className="absolute inset-0 overflow-hidden"
+              style={{ width: `${fillPercentage}%` }}
+            >
+              <Star className={`${starSize} text-yellow-400 fill-yellow-400`} />
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 const stats = [
   {
     value: siteConfig.stats.insertionRate,
@@ -67,10 +95,17 @@ const AvisPage = () => {
               Nos élèves donnent leurs{' '}
               <span className="text-secondary-400">avis</span>
             </h1>
-            <p className="text-xl text-white/80 mb-8">
+            <p className="text-xl text-white/80 mb-4">
               Découvrez les avis et témoignages des anciens élèves Avenir&Progres. 
               Ils reviennent sur le déroulé de leur formation à distance et ce qu'ils ont apprécié.
             </p>
+            
+            {/* Note globale */}
+            <div className="mb-8 inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
+              <StarRating score={weightedAverage} starSize="w-5 h-5" />
+              <span className="text-xl font-bold">{weightedAverage.toFixed(1)}/5</span>
+              <span className="text-white/70">({totalReviews}+ avis)</span>
+            </div>
 
             {/* Rating Badges */}
             <div className="flex flex-wrap justify-center gap-6">
@@ -82,17 +117,8 @@ const AvisPage = () => {
                   rel="noopener noreferrer"
                   className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 hover:bg-white/20 transition-colors"
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${
-                          i < Math.floor(rating.score)
-                            ? 'text-yellow-400 fill-yellow-400'
-                            : 'text-gray-400'
-                        }`}
-                      />
-                    ))}
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <StarRating score={rating.score} starSize="w-4 h-4" />
                   </div>
                   <p className="text-2xl font-bold">{rating.score}/5</p>
                   <p className="text-sm text-white/70">

@@ -150,9 +150,9 @@ const AlternancePage = () => {
               <div className="bg-white rounded-xl px-4 py-3 shadow-md">
                 <RNCPBadge className="!h-10" />
               </div>
-              <div className="bg-white rounded-xl px-4 py-3 shadow-md">
+              {/* <div className="bg-white rounded-xl px-4 py-3 shadow-md">
                 <OPCOLogo className="!h-8" />
-              </div>
+              </div> */}
             </div>
             
             <a

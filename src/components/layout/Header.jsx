@@ -37,13 +37,6 @@ const Header = () => {
               <AvenirProgresLogo size="sm" className="relative transition-transform duration-300 group-hover:scale-105" />
             </div>
             {/* Nom de marque - visible uniquement sur grands écrans */}
-            <div className="hidden xl:block">
-              <span className="text-lg font-bold tracking-tight whitespace-nowrap">
-                <span className="text-gray-900 dark:text-white">Avenir</span>
-                <span className="text-primary-500">&</span>
-                <span className="text-gradient">Progres</span>
-              </span>
-            </div>
           </Link>
 
           {/* Desktop Navigation - Centered Pill */}

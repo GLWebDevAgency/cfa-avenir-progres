@@ -1,6 +1,24 @@
 import { motion } from 'framer-motion'
 import { Star, Quote, Play } from 'lucide-react'
 
+// Composant pour afficher les étoiles (5 étoiles avec remplissage selon rating)
+const StarRating = ({ rating }) => {
+  return (
+    <div className="flex gap-1">
+      {[...Array(5)].map((_, i) => (
+        <Star 
+          key={i} 
+          className={`w-5 h-5 ${
+            i < rating 
+              ? 'text-yellow-400 fill-yellow-400' 
+              : 'text-gray-300 dark:text-gray-600'
+          }`} 
+        />
+      ))}
+    </div>
+  )
+}
+
 const TestimonialCard = ({ testimonial, index = 0 }) => {
   return (
     <motion.div
@@ -16,10 +34,8 @@ const TestimonialCard = ({ testimonial, index = 0 }) => {
       </div>
 
       {/* Stars */}
-      <div className="flex gap-1 mb-4">
-        {[...Array(testimonial.rating)].map((_, i) => (
-          <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-        ))}
+      <div className="mb-4">
+        <StarRating rating={testimonial.rating} />
       </div>
 
       {/* Quote */}

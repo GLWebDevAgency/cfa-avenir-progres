@@ -7,7 +7,11 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 
-import { testimonials } from '@/data/testimonials'
+import { testimonials, ratings } from '@/data/testimonials'
+
+// Calculer le total des avis et la moyenne pondérée
+const totalReviews = Object.values(ratings).reduce((sum, r) => sum + r.count, 0)
+const weightedAverage = Object.values(ratings).reduce((sum, r) => sum + r.score * r.count, 0) / totalReviews
 
 // Premium Testimonial Card - Adaptive Theme
 const TestimonialCardPremium = ({ testimonial, index }) => {
@@ -41,7 +45,7 @@ const TestimonialCardPremium = ({ testimonial, index }) => {
         
         {/* Content */}
         <p className="text-gray-600 dark:text-white/70 leading-relaxed flex-1 mb-6 italic line-clamp-4 min-h-[6rem]">
-          "{testimonial.content}"
+          "{testimonial.quote}"
         </p>
         
         {/* Author */}
@@ -126,17 +130,17 @@ const TestimonialsSection = () => {
         >
           <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl px-6 py-4">
             <div className="flex -space-x-2">
-              {[...Array(4)].map((_, i) => (
+              {testimonials.slice(0, 4).map((t, i) => (
                 <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white text-sm font-bold border-2 border-white dark:border-gray-900">
-                  {['L', 'M', 'S', 'A'][i]}
+                  {t.name.charAt(0)}
                 </div>
               ))}
             </div>
             <div>
-              <p className="font-bold text-gray-900 dark:text-white">+2000 avis</p>
+              <p className="font-bold text-gray-900 dark:text-white">+{totalReviews} avis</p>
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                <span className="text-sm text-gray-500 dark:text-white/50">4.8/5 moyenne</span>
+                <span className="text-sm text-gray-500 dark:text-white/50">{weightedAverage.toFixed(1)}/5 moyenne</span>
               </div>
             </div>
           </div>
