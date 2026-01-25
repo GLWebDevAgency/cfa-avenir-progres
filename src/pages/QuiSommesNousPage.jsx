@@ -106,9 +106,9 @@ const QuiSommesNousPage = () => {
               </div>
               <div className="bg-secondary-500 text-white rounded-2xl p-6 text-center">
                 <div className="text-4xl font-bold mb-2">
-                  {(siteConfig.stats.learners / 1000).toFixed(0)}K+
+                  {siteConfig.stats.learners}+
                 </div>
-                <p className="text-white/80">Apprenants</p>
+                <p className="text-white/80">Apprenants formés</p>
               </div>
               <div className="bg-accent-500 text-white rounded-2xl p-6 text-center">
                 <div className="text-4xl font-bold mb-2">
