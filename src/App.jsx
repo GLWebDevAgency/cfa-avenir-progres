@@ -12,6 +12,8 @@ const ContactPage = lazy(() => import('@/pages/ContactPage'))
 const QuiSommesNousPage = lazy(() => import('@/pages/QuiSommesNousPage'))
 const TarifsPage = lazy(() => import('@/pages/TarifsPage'))
 const BlogPage = lazy(() => import('@/pages/BlogPage'))
+const BlogArticlePage = lazy(() => import('@/pages/BlogArticlePage'))
+const FormationDetailPage = lazy(() => import('@/pages/FormationDetailPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 // Loading component
@@ -31,6 +33,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="formations" element={<FormationsPage />} />
+          <Route path="formations/:formationId" element={<FormationDetailPage />} />
           <Route path="methode" element={<MethodePage />} />
           <Route path="alternance" element={<AlternancePage />} />
           <Route path="avis" element={<AvisPage />} />
@@ -38,8 +41,7 @@ function App() {
           <Route path="qui-sommes-nous" element={<QuiSommesNousPage />} />
           <Route path="tarifs" element={<TarifsPage />} />
           <Route path="blog" element={<BlogPage />} />
-          {/* TODO: Article detail page */}
-          {/* <Route path="blog/:slug" element={<BlogArticlePage />} /> */}
+          <Route path="blog/:slug" element={<BlogArticlePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

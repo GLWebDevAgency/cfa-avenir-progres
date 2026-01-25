@@ -79,7 +79,7 @@ const AvisPage = () => {
     <>
       <SEO
         title="Avis et Témoignages de nos Élèves"
-        description="Découvrez les avis et témoignages de nos élèves. Plus de 55 000 apprenants formés avec un taux de satisfaction de 94%. Lisez leurs retours d'expérience."
+        description="Découvrez les avis et témoignages de nos élèves. Une équipe de formateurs expérimentés avec un taux de satisfaction de 94%. Lisez leurs retours d'expérience."
         keywords="avis Avenir&Progres, aveniretprogres, témoignages formation, retour expérience, reconversion réussie"
       />
 

@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, ArrowLeft, CheckCircle, Loader2, Sparkles } from 'lucide-react'
+import { ArrowRight, ArrowLeft, CheckCircle, Loader2, Sparkles, X, AlertCircle } from 'lucide-react'
 import { sectors } from '@/data/formations'
 import CustomSelect from '@/components/ui/CustomSelect'
 
@@ -48,6 +48,8 @@ const ContactFormMultiStep = ({ className = '' }) => {
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [submitError, setSubmitError] = useState(null)
   const [formData, setFormData] = useState({})
 
   const schemas = { 1: step1Schema, 2: step2Schema, 3: step3Schema }
@@ -78,29 +80,132 @@ const ContactFormMultiStep = ({ className = '' }) => {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true)
+    setSubmitError(null)
     const finalData = { ...formData, ...data }
 
     try {
+      // Utiliser Web3Forms pour l'envoi des emails
+      const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
+      
+      if (!accessKey || accessKey === 'YOUR_WEB3FORMS_ACCESS_KEY') {
+        // Mode simulation si pas de clé API configurée
+        console.log('Mode simulation - Données du formulaire:', finalData)
+        await new Promise(resolve => setTimeout(resolve, 1500))
+        setIsSuccess(true)
+        setShowSuccessModal(true)
+        return
+      }
+
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          access_key: 'YOUR_WEB3FORMS_ACCESS_KEY',
-          subject: `Nouvelle demande - ${finalData.firstName} ${finalData.lastName}`,
-          from_name: 'Avenir&Progres',
-          ...finalData,
+          access_key: accessKey,
+          subject: `Nouvelle demande de formation - ${finalData.firstName} ${finalData.lastName}`,
+          from_name: 'Avenir&Progres - Site Web',
+          to_name: 'Équipe Avenir&Progres',
+          // Informations formatées
+          sector: finalData.sector,
+          diploma: finalData.diploma,
+          civility: finalData.civility,
+          age_range: finalData.ageRange,
+          first_name: finalData.firstName,
+          last_name: finalData.lastName,
+          email: finalData.email,
+          phone: finalData.phone,
+          postal_code: finalData.postalCode || 'Non renseigné',
+          consent: finalData.consent ? 'Oui' : 'Non',
         }),
       })
-      if (response.ok) setIsSuccess(true)
+      
+      const result = await response.json()
+      
+      if (response.ok && result.success) {
+        setIsSuccess(true)
+        setShowSuccessModal(true)
+      } else {
+        throw new Error(result.message || 'Une erreur est survenue lors de l\'envoi')
+      }
     } catch (error) {
       console.error('Form submission error:', error)
+      setSubmitError('Une erreur est survenue. Veuillez réessayer ou nous contacter directement.')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  // Success State
-  if (isSuccess) {
+  // Fermer la modal et réinitialiser le formulaire
+  const handleCloseModal = () => {
+    setShowSuccessModal(false)
+    setIsSuccess(false)
+    setStep(1)
+    setFormData({})
+  }
+
+  // Success Modal Popup
+  const SuccessModal = () => (
+    <AnimatePresence>
+      {showSuccessModal && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleCloseModal}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+          />
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", duration: 0.5 }}
+            className="fixed inset-0 flex items-center justify-center z-[101] p-4"
+          >
+            <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-gray-200 dark:border-white/10 relative">
+              {/* Close button */}
+              <button
+                onClick={handleCloseModal}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
+              >
+                <X className="w-4 h-4 text-gray-500 dark:text-white/60" />
+              </button>
+              
+              {/* Success icon */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", delay: 0.2 }}
+                className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/30"
+              >
+                <CheckCircle className="w-10 h-10 text-white" />
+              </motion.div>
+              
+              {/* Content */}
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 text-center">
+                Demande envoyée !
+              </h3>
+              <p className="text-gray-600 dark:text-white/60 mb-6 leading-relaxed text-center">
+                Votre demande a bien été prise en compte. Un conseiller vous contactera dans les plus brefs délais pour discuter de votre projet de formation.
+              </p>
+              
+              {/* CTA */}
+              <button
+                onClick={handleCloseModal}
+                className="w-full py-3 bg-gradient-to-r from-primary-500 to-primary-400 text-white font-semibold rounded-full shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 transition-all"
+              >
+                Fermer
+              </button>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  )
+
+  // Success State (inline version - fallback)
+  if (isSuccess && !showSuccessModal) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -116,10 +221,10 @@ const ContactFormMultiStep = ({ className = '' }) => {
           <CheckCircle className="w-12 h-12 text-white" />
         </motion.div>
         <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-          Merci pour votre demande ! 🎉
+          Merci pour votre demande !
         </h3>
         <p className="text-gray-600 dark:text-white/60 mb-8 leading-relaxed">
-          Un conseiller vous contactera dans les plus brefs délais pour discuter de votre projet de formation.
+          Votre demande a bien été prise en compte. Un conseiller vous contactera dans les plus brefs délais.
         </p>
         <button
           onClick={() => { setIsSuccess(false); setStep(1); setFormData({}) }}
@@ -132,45 +237,39 @@ const ContactFormMultiStep = ({ className = '' }) => {
   }
 
   return (
-    <div className={className}>
+    <>
+      {/* Success Modal */}
+      <SuccessModal />
+      
+      <div className={className}>
       {/* Progress Steps - Centered */}
-      <div className="flex items-center justify-center mb-8">
-        {[1, 2, 3].map((s, index) => (
+      <div className="flex items-center justify-center mb-6 px-2">
+        {[1, 2, 3].map((s) => (
           <div key={s} className="flex items-center">
-            <div className="relative">
-              <motion.div
-                initial={false}
-                animate={{
-                  scale: s === step ? 1.1 : 1,
-                }}
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
-                  s <= step 
-                    ? 'bg-gradient-to-r from-primary-500 to-primary-400 text-white shadow-lg shadow-primary-500/30' 
-                    : 'bg-gray-100 dark:bg-white/10 text-gray-400 dark:text-white/40 border border-gray-200 dark:border-white/10'
-                }`}
-              >
-                {s < step ? (
-                  <CheckCircle className="w-5 h-5" />
-                ) : (
-                  s
-                )}
-              </motion.div>
-              {s === step && (
-                <motion.div
-                  layoutId="stepIndicator"
-                  className="absolute inset-0 rounded-full border-2 border-primary-500"
-                  initial={false}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
+            <motion.div
+              initial={false}
+              animate={{
+                scale: s === step ? 1.05 : 1,
+              }}
+              className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-xs transition-all flex-shrink-0 ${
+                s <= step 
+                  ? 'bg-primary-500 text-white' 
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+              }`}
+            >
+              {s < step ? (
+                <CheckCircle className="w-4 h-4" />
+              ) : (
+                s
               )}
-            </div>
+            </motion.div>
             {s < 3 && (
-              <div className="w-16 sm:w-24 h-1 mx-2 rounded-full overflow-hidden bg-gray-200 dark:bg-white/10">
+              <div className="w-8 sm:w-12 h-0.5 mx-1 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700">
                 <motion.div
                   initial={false}
                   animate={{ width: s < step ? '100%' : '0%' }}
                   transition={{ duration: 0.3 }}
-                  className="h-full bg-gradient-to-r from-primary-500 to-primary-400"
+                  className="h-full bg-primary-500"
                 />
               </div>
             )}
@@ -355,6 +454,18 @@ const ContactFormMultiStep = ({ className = '' }) => {
               </div>
               {errors.consent && <p className="form-error text-red-400">{errors.consent.message}</p>}
 
+              {/* Error message */}
+              {submitError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl text-red-600 dark:text-red-400 text-sm"
+                >
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>{submitError}</span>
+                </motion.div>
+              )}
+
               <div className="flex gap-3 mt-4">
                 <button type="button" onClick={prevStep} className="flex-1 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white font-medium rounded-full hover:bg-gray-200 dark:hover:bg-white/10 flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[0.98] active:scale-95">
                   <ArrowLeft className="w-5 h-5" /> Retour
@@ -375,20 +486,8 @@ const ContactFormMultiStep = ({ className = '' }) => {
           )}
         </AnimatePresence>
       </form>
-
-      {/* Trust indicators - Premium */}
-      <div className="mt-8 pt-6 border-t border-gray-200 dark:border-white/10 flex items-center justify-center gap-6 text-xs text-gray-500 dark:text-white/40">
-        <span className="flex items-center gap-1.5">
-          <span className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center">🔒</span>
-          <span>Données sécurisées</span>
-        </span>
-        <span className="text-gray-300 dark:text-white/20">•</span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-5 h-5 rounded-full bg-primary-500/10 flex items-center justify-center">⚡</span>
-          <span>Réponse rapide</span>
-        </span>
-      </div>
     </div>
+    </>
   )
 }
 

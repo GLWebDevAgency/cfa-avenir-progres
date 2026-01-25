@@ -21,7 +21,7 @@ export const siteConfig = {
     insertionRate: 94,
     learners: 100,
     successRate: 92,
-    yearsExperience: 10,
+    yearsExperience: 15,  // Expertise cumulée des formateurs
   },
   
   certifications: [
@@ -35,9 +35,9 @@ export const navigation = [
   { name: 'Formations', href: '/formations' },
   { name: 'Méthode', href: '/methode' },
   { name: 'Alternance', href: '/alternance' },
-  { name: 'Avis', href: '/avis' },
+  { name: 'Qui sommes-nous', href: '/qui-sommes-nous' },
   { name: 'Blog', href: '/blog' },
-  { name: 'Qui sommes-nous ?', href: '/qui-sommes-nous' },
+  { name: 'Avis', href: '/avis' },
   { name: 'Contact', href: '/contact' },
 ]
 

@@ -5,84 +5,7 @@ import { Search, Calendar, Clock, ArrowRight, Tag } from 'lucide-react'
 
 import { SEO, SectionTitle } from '@/components/common'
 import { CTASection } from '@/components/sections'
-
-// Blog articles data (will be in a separate file for real project)
-const blogArticles = [
-  {
-    id: 1,
-    slug: 'comment-reussir-sa-reconversion-professionnelle',
-    title: 'Comment réussir sa reconversion professionnelle en 2025 ?',
-    excerpt: 'Découvrez les étapes clés pour réussir votre changement de carrière, du bilan de compétences à la formation.',
-    category: 'Reconversion',
-    author: 'Marie Dupont',
-    date: '2025-01-15',
-    readTime: '8 min',
-    image: '/images/blog/reconversion.jpg',
-    featured: true,
-  },
-  {
-    id: 2,
-    slug: 'titre-professionnel-graphiste-guide',
-    title: 'TP Graphiste : le guide complet pour adultes en reconversion',
-    excerpt: 'Tout ce que vous devez savoir sur le Titre Professionnel Graphiste RNCP : programme, débouchés et conseils.',
-    category: 'Formations',
-    author: 'Paul Martin',
-    date: '2025-01-10',
-    readTime: '12 min',
-    image: '/images/blog/graphiste.jpg',
-    featured: true,
-  },
-  {
-    id: 3,
-    slug: 'alternance-adulte-mode-emploi',
-    title: 'L\'alternance pour les adultes : mode d\'emploi',
-    excerpt: 'Contrairement aux idées reçues, l\'alternance n\'est pas réservée aux jeunes. Découvrez comment en profiter.',
-    category: 'Financement',
-    author: 'Sophie Bernard',
-    date: '2025-01-05',
-    readTime: '6 min',
-    image: '/images/blog/alternance.jpg',
-    featured: false,
-  },
-  {
-    id: 4,
-    slug: 'metiers-commercial-recrutent',
-    title: 'Les métiers du commerce qui recrutent',
-    excerpt: 'Conseiller commercial, attaché commercial, prospecteur... Découvrez les opportunités du secteur.',
-    category: 'Métiers',
-    author: 'Marie Dupont',
-    date: '2025-01-02',
-    readTime: '10 min',
-    image: '/images/blog/commerce.jpg',
-    featured: false,
-  },
-  {
-    id: 5,
-    slug: 'opco-financement-alternance',
-    title: 'OPCO : comment financer votre formation en alternance',
-    excerpt: 'Les OPCO prennent en charge le coût de votre formation. Voici comment en bénéficier.',
-    category: 'Financement',
-    author: 'Paul Martin',
-    date: '2024-12-28',
-    readTime: '7 min',
-    image: '/images/blog/financement.jpg',
-    featured: false,
-  },
-  {
-    id: 6,
-    slug: 'tp-conseiller-commercial-debouches',
-    title: 'TP Conseiller Commercial : quels débouchés après la formation ?',
-    excerpt: 'Commerce, distribution, services... Explorez les nombreuses opportunités après un TP Commercial.',
-    category: 'Formations',
-    author: 'Sophie Bernard',
-    date: '2024-12-20',
-    readTime: '9 min',
-    image: '/images/blog/commercial.jpg',
-    featured: false,
-  },
-]
-
-const categories = ['Tous', 'Reconversion', 'Formations', 'Financement', 'Métiers', 'Conseils']
+import { blogArticles, getFeaturedArticles, blogCategories as categories } from '@/data/blogArticles'
 
 const BlogPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -97,7 +20,7 @@ const BlogPage = () => {
     })
   }, [searchTerm, selectedCategory])
 
-  const featuredArticles = blogArticles.filter(a => a.featured)
+  const featuredArticles = getFeaturedArticles()
 
   return (
     <>
@@ -145,6 +68,11 @@ const BlogPage = () => {
               >
                 <Link to={`/blog/${article.slug}`}>
                   <div className="relative h-64 bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden mb-4">
+                    <img 
+                      src={article.image} 
+                      alt={article.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-4 left-4 right-4">
                       <span className="inline-block bg-primary-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-2">
@@ -231,7 +159,13 @@ const BlogPage = () => {
                   className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow h-full flex flex-col"
                 >
                   <Link to={`/blog/${article.slug}`} className="flex flex-col h-full">
-                    <div className="h-48 bg-gray-100 dark:bg-gray-700" />
+                    <div className="h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                      <img 
+                        src={article.image} 
+                        alt={article.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
                     <div className="p-6 flex flex-col flex-1">
                       <div className="flex items-center gap-2 mb-3">
                         <Tag className="w-4 h-4 text-primary-500 dark:text-primary-400" />

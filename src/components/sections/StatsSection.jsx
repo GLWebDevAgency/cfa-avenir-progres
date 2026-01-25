@@ -59,7 +59,7 @@ const stats = [
     value: siteConfig.stats.yearsExperience,
     suffix: ' ans',
     label: "D'expertise",
-    description: "dans la formation à distance",
+    description: "cumulée de nos formateurs",
     icon: Clock,
     glowColor: 'rgba(139, 92, 246, 0.4)',
     iconColor: '#8b5cf6',

@@ -350,7 +350,7 @@ async function main() {
   }
   
   console.log('\n');
-  log.success('Posts générés avec succès ! 🎉');
+  log.success('Posts générés avec succès !');
   console.log(`\n${colors.cyan}📋 Prochaines étapes:${colors.reset}`);
   console.log('   1. Copiez le post correspondant à chaque réseau');
   console.log('   2. Ajoutez une image/vidéo adaptée');
